@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, FormEvent } from 'react';
 import { 
   Zap, TrendingUp, Clock, MessageSquare, BarChart3,
   Bot, CheckCircle2, ArrowRight, Send, Menu, X,
-  Shield, PenTool, Target, ChevronRight, FileText
+  Shield, PenTool, Target, ChevronRight, FileText, Search
 } from 'lucide-react';
 import { ContentProvider, useContent } from './ContentContext';
 import { AdminPanel } from './AdminPanel';
@@ -188,6 +188,64 @@ function Solutions() {
               ))}
             </ul>
           </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ============ ONE-TIME SERVICES SECTION ============
+function OneTimeServices() {
+  const ref = useScrollAnimation();
+  const { content } = useContent();
+  
+  const icons = [Search, MessageSquare, Bot];
+
+  return (
+    <section ref={ref} className="py-20 md:py-32 bg-surface">
+      <div className="max-w-6xl mx-auto px-6">
+        <div className="text-center mb-16 fade-in-up">
+          <span className="text-sm font-semibold text-accent uppercase tracking-wider">{content.oneTimeServices.sectionLabel}</span>
+          <h2 className="text-3xl md:text-4xl font-bold text-graphite mt-3">
+            {content.oneTimeServices.sectionTitle}
+          </h2>
+          <p className="text-graphite-light mt-4 max-w-2xl mx-auto">
+            {content.oneTimeServices.sectionSubtitle}
+          </p>
+        </div>
+        
+        <div className="stagger-children grid md:grid-cols-3 gap-8">
+          {content.oneTimeServices.cards.map((service, index) => {
+            const Icon = icons[index] || Search;
+            return (
+              <div key={index} className="flex flex-col p-8 rounded-2xl bg-white border border-gray-100 hover:border-accent/20 hover:shadow-xl transition-all duration-300">
+                <div className="w-14 h-14 rounded-xl bg-accent/10 flex items-center justify-center mb-6">
+                  <Icon className="w-7 h-7 text-accent" />
+                </div>
+                <h3 className="text-xl font-bold text-graphite mb-3">{service.title}</h3>
+                
+                <div className="mb-4">
+                  <div className="text-xs font-semibold text-graphite-light uppercase tracking-wider mb-2">Какую боль решает:</div>
+                  <p className="text-graphite leading-relaxed">{service.pain}</p>
+                </div>
+                
+                <div className="mb-6 flex-1">
+                  <div className="text-xs font-semibold text-graphite-light uppercase tracking-wider mb-2">Что входит:</div>
+                  <p className="text-graphite-light leading-relaxed">{service.description}</p>
+                </div>
+                
+                <div className="text-2xl font-bold text-accent mb-4">{service.price}</div>
+                
+                <a 
+                  href="#contact"
+                  className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-accent hover:bg-accent-hover text-white font-semibold rounded-xl transition-all duration-300"
+                >
+                  {service.buttonText}
+                  <ChevronRight className="w-4 h-4" />
+                </a>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -568,6 +626,7 @@ function SiteContent() {
       <Hero />
       <Problems />
       <Solutions />
+      <OneTimeServices />
       <Services />
       <Process />
       <Advantages />
