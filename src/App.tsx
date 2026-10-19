@@ -462,7 +462,14 @@ function ContactForm() {
           </button>
           
           <p className="text-center text-white/40 text-sm">
-            {content.contact.privacyNote}
+            Нажимая кнопку, вы соглашаетесь с{' '}
+            <a 
+              href="#privacy" 
+              onClick={(e) => { e.preventDefault(); window.location.hash = 'privacy'; }} 
+              className="text-white/60 hover:text-white underline transition-colors cursor-pointer"
+            >
+              политикой конфиденциальности
+            </a>
           </p>
         </form>
       </div>
