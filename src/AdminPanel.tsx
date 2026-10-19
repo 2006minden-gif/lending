@@ -343,6 +343,36 @@ export function AdminPanel() {
             </div>
           </Section>
 
+          {/* One-Time Services */}
+          <Section title="🎯 Одноразовые услуги">
+            <Field label="Метка секции" value={content.oneTimeServices.sectionLabel} onChange={v => updateContent('oneTimeServices.sectionLabel', v)} />
+            <Field label="Заголовок" value={content.oneTimeServices.sectionTitle} onChange={v => updateContent('oneTimeServices.sectionTitle', v)} />
+            <Field label="Подзаголовок" value={content.oneTimeServices.sectionSubtitle} onChange={v => updateContent('oneTimeServices.sectionSubtitle', v)} textarea />
+            {content.oneTimeServices.cards.map((card, index) => (
+              <div key={index} className="p-3 border border-gray-200 rounded-lg bg-gray-50 relative">
+                <button
+                  onClick={() => removeArrayItem('oneTimeServices.cards', index)}
+                  className="absolute top-2 right-2 p-1 text-red-400 hover:text-red-600 hover:bg-red-50 rounded"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+                <div className="space-y-2 pr-6">
+                  <Field label="Название" value={card.title} onChange={v => updateArrayItem('oneTimeServices.cards', index, 'title', v)} />
+                  <Field label="Какую боль решает" value={card.pain} onChange={v => updateArrayItem('oneTimeServices.cards', index, 'pain', v)} textarea />
+                  <Field label="Что входит" value={card.description} onChange={v => updateArrayItem('oneTimeServices.cards', index, 'description', v)} textarea />
+                  <Field label="Цена" value={card.price} onChange={v => updateArrayItem('oneTimeServices.cards', index, 'price', v)} />
+                  <Field label="Текст кнопки" value={card.buttonText} onChange={v => updateArrayItem('oneTimeServices.cards', index, 'buttonText', v)} />
+                </div>
+              </div>
+            ))}
+            <button
+              onClick={() => addArrayItem('oneTimeServices.cards', { title: 'Новая услуга', pain: 'Боль', description: 'Описание', price: 'от 0 ₽', buttonText: 'Заказать' })}
+              className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 mt-2"
+            >
+              <Plus className="w-3 h-3" /> Добавить карточку
+            </button>
+          </Section>
+
           {/* Services */}
           <Section title="💰 Услуги и цены">
             <Field label="Метка секции" value={content.services.sectionLabel} onChange={v => updateContent('services.sectionLabel', v)} />
