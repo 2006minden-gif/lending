@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef, FormEvent } from 'react';
 import { 
-  Zap, TrendingUp, Clock, MessageSquare, Search, BarChart3,
-  Bot, FileText, CheckCircle2, ArrowRight, Send, Menu, X,
-  Shield, PenTool, Target, ChevronRight
+  Zap, TrendingUp, Clock, MessageSquare, BarChart3,
+  Bot, CheckCircle2, ArrowRight, Send, Menu, X,
+  Shield, PenTool, Target, ChevronRight, FileText
 } from 'lucide-react';
+import { ContentProvider, useContent } from './ContentContext';
+import { AdminPanel } from './AdminPanel';
 
 // ============ SCROLL ANIMATION HOOK ============
 function useScrollAnimation() {
@@ -35,9 +37,9 @@ function useScrollAnimation() {
 
 // ============ HERO SECTION ============
 function Hero() {
+  const { content } = useContent();
   return (
     <section className="min-h-screen flex items-center justify-center bg-navy relative overflow-hidden">
-      {/* Background geometric elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-20 left-10 w-72 h-72 bg-accent/5 rounded-full blur-3xl"></div>
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent-green/5 rounded-full blur-3xl"></div>
@@ -48,17 +50,16 @@ function Hero() {
       <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
         <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full border border-white/10 mb-8">
           <Zap className="w-4 h-4 text-accent" />
-          <span className="text-sm text-white/80 font-medium">Маркетплейсы + ИИ-автоматизация</span>
+          <span className="text-sm text-white/80 font-medium">{content.hero.badge}</span>
         </div>
         
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6">
-          Системное ведение<br />
-          <span className="text-accent">маркетплейсов</span>
+          {content.hero.title1}<br />
+          <span className="text-accent">{content.hero.title2}</span>
         </h1>
         
         <p className="text-lg md:text-xl text-white/70 max-w-2xl mx-auto mb-10 leading-relaxed">
-          Wildberries и Ozon под ключ. Разработка ИИ-агентов, которые берут на себя рутину — 
-          пока вы занимаетесь стратегией бизнеса
+          {content.hero.subtitle}
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -66,14 +67,14 @@ function Hero() {
             href="#contact" 
             className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-accent hover:bg-accent-hover text-white font-semibold rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-accent/25"
           >
-            Оставить заявку
+            {content.hero.ctaPrimary}
             <ArrowRight className="w-5 h-5" />
           </a>
           <a 
             href="#services" 
             className="inline-flex items-center justify-center gap-2 px-8 py-4 border border-white/20 text-white font-semibold rounded-xl hover:bg-white/5 transition-all duration-300"
           >
-            Смотреть услуги
+            {content.hero.ctaSecondary}
           </a>
         </div>
 
@@ -99,45 +100,33 @@ function Hero() {
 // ============ PROBLEMS SECTION ============
 function Problems() {
   const ref = useScrollAnimation();
+  const { content } = useContent();
   
-  const problems = [
-    {
-      icon: Clock,
-      title: 'Рутина съедает время',
-      description: 'Ответы на отзывы, обновление SEO, аналитика продаж — всё это отнимает часы каждый день, не приближая к росту выручки.'
-    },
-    {
-      icon: TrendingUp,
-      title: 'Менеджер не даёт результата',
-      description: 'Наёмный сотрудник работает «для галочки». Нет системы, нет отчётности, нет понимания — что конкретно сделано и какой эффект.'
-    },
-    {
-      icon: MessageSquare,
-      title: 'Хаос в коммуникации',
-      description: 'Устные договорённости забываются. Задачи теряются. Непонятно, кто за что отвечает и в какие сроки.'
-    }
-  ];
+  const icons = [Clock, TrendingUp, MessageSquare];
 
   return (
     <section ref={ref} className="py-20 md:py-32 bg-white">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-16 fade-in-up">
-          <span className="text-sm font-semibold text-accent uppercase tracking-wider">Знакомые проблемы?</span>
+          <span className="text-sm font-semibold text-accent uppercase tracking-wider">{content.problems.sectionLabel}</span>
           <h2 className="text-3xl md:text-4xl font-bold text-graphite mt-3">
-            Почему селлеры теряют деньги
+            {content.problems.sectionTitle}
           </h2>
         </div>
         
         <div className="stagger-children grid md:grid-cols-3 gap-8">
-          {problems.map((problem, index) => (
-            <div key={index} className="p-8 rounded-2xl bg-surface border border-gray-100 hover:border-accent/20 hover:shadow-lg transition-all duration-300">
-              <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center mb-6">
-                <problem.icon className="w-6 h-6 text-accent" />
+          {content.problems.items.map((problem, index) => {
+            const Icon = icons[index] || Clock;
+            return (
+              <div key={index} className="p-8 rounded-2xl bg-surface border border-gray-100 hover:border-accent/20 hover:shadow-lg transition-all duration-300">
+                <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center mb-6">
+                  <Icon className="w-6 h-6 text-accent" />
+                </div>
+                <h3 className="text-xl font-bold text-graphite mb-3">{problem.title}</h3>
+                <p className="text-graphite-light leading-relaxed">{problem.description}</p>
               </div>
-              <h3 className="text-xl font-bold text-graphite mb-3">{problem.title}</h3>
-              <p className="text-graphite-light leading-relaxed">{problem.description}</p>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
@@ -147,33 +136,32 @@ function Problems() {
 // ============ SOLUTIONS SECTION ============
 function Solutions() {
   const ref = useScrollAnimation();
+  const { content } = useContent();
   
   return (
     <section ref={ref} className="py-20 md:py-32 bg-surface">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-16 fade-in-up">
-          <span className="text-sm font-semibold text-accent uppercase tracking-wider">Решение</span>
+          <span className="text-sm font-semibold text-accent uppercase tracking-wider">{content.solutions.sectionLabel}</span>
           <h2 className="text-3xl md:text-4xl font-bold text-graphite mt-3">
-            Два формата работы
+            {content.solutions.sectionTitle}
           </h2>
           <p className="text-graphite-light mt-4 max-w-2xl mx-auto">
-            Выберите подходящий вариант или комбинируйте — оба подхода дают измеримый результат
+            {content.solutions.sectionSubtitle}
           </p>
         </div>
         
         <div className="grid md:grid-cols-2 gap-8">
-          {/* Format 1 */}
           <div className="fade-in-left p-8 md:p-10 rounded-2xl bg-white border border-gray-100 hover:shadow-xl transition-all duration-300">
             <div className="w-14 h-14 rounded-xl bg-accent/10 flex items-center justify-center mb-6">
               <BarChart3 className="w-7 h-7 text-accent" />
             </div>
-            <h3 className="text-2xl font-bold text-graphite mb-4">Ведение кабинета</h3>
+            <h3 className="text-2xl font-bold text-graphite mb-4">{content.solutions.format1Title}</h3>
             <p className="text-graphite-light mb-6 leading-relaxed">
-              Полное системное управление вашим магазином на маркетплейсе. Беру на себя всю операционку — 
-              от создания карточек до аналитики и стратегии продвижения.
+              {content.solutions.format1Description}
             </p>
             <ul className="space-y-3">
-              {['SEO-оптимизация карточек', 'Управление отзывами и вопросами', 'Аналитика и отчётность', 'Ценообразование и акции', 'Планирование поставок'].map((item, i) => (
+              {content.solutions.format1Features.map((item, i) => (
                 <li key={i} className="flex items-center gap-3">
                   <CheckCircle2 className="w-5 h-5 text-accent-green flex-shrink-0" />
                   <span className="text-graphite">{item}</span>
@@ -182,18 +170,16 @@ function Solutions() {
             </ul>
           </div>
           
-          {/* Format 2 */}
           <div className="fade-in-right p-8 md:p-10 rounded-2xl bg-white border border-gray-100 hover:shadow-xl transition-all duration-300">
             <div className="w-14 h-14 rounded-xl bg-accent-green/10 flex items-center justify-center mb-6">
               <Bot className="w-7 h-7 text-accent-green" />
             </div>
-            <h3 className="text-2xl font-bold text-graphite mb-4">Разработка ИИ-агента</h3>
+            <h3 className="text-2xl font-bold text-graphite mb-4">{content.solutions.format2Title}</h3>
             <p className="text-graphite-light mb-6 leading-relaxed">
-              Создаю персонального ИИ-агента под ваши задачи. Он автоматизирует рутинные процессы 
-              и работает 24/7 без перерывов и отпусков.
+              {content.solutions.format2Description}
             </p>
             <ul className="space-y-3">
-              {['Автоответы на отзывы и вопросы', 'Генерация SEO-описаний', 'Мониторинг цен конкурентов', 'Автоматические отчёты', 'Интеграция с вашими системами'].map((item, i) => (
+              {content.solutions.format2Features.map((item, i) => (
                 <li key={i} className="flex items-center gap-3">
                   <CheckCircle2 className="w-5 h-5 text-accent-green flex-shrink-0" />
                   <span className="text-graphite">{item}</span>
@@ -210,49 +196,23 @@ function Solutions() {
 // ============ SERVICES SECTION ============
 function Services() {
   const ref = useScrollAnimation();
+  const { content } = useContent();
   
-  const services = [
-    {
-      title: 'Ведение кабинета',
-      price: 'от 30 000 ₽/мес',
-      description: 'Полное управление магазином на Wildberries или Ozon. Все задачи — под контролем.',
-      features: ['SEO карточек', 'Отзывы и вопросы', 'Аналитика продаж', 'Еженедельные отчёты', 'Стратегия продвижения'],
-      popular: false,
-      accent: 'accent'
-    },
-    {
-      title: 'ИИ-агент под ключ',
-      price: 'от 50 000 ₽',
-      description: 'Разработка и внедрение ИИ-агента для автоматизации конкретных задач вашего бизнеса.',
-      features: ['Анализ задач', 'Разработка агента', 'Тестирование', 'Внедрение', 'Поддержка 30 дней'],
-      popular: true,
-      accent: 'accent-green'
-    },
-    {
-      title: 'Комплекс',
-      price: 'от 70 000 ₽/мес',
-      description: 'Ведение кабинета + ИИ-агент. Максимальная автоматизация и системный подход.',
-      features: ['Всё из "Ведения"', 'Персональный ИИ-агент', 'Приоритетная поддержка', 'Ежедневные отчёты', 'Стратегические сессии'],
-      popular: false,
-      accent: 'accent'
-    }
-  ];
-
   return (
     <section ref={ref} id="services" className="py-20 md:py-32 bg-white">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-16 fade-in-up">
-          <span className="text-sm font-semibold text-accent uppercase tracking-wider">Услуги и цены</span>
+          <span className="text-sm font-semibold text-accent uppercase tracking-wider">{content.services.sectionLabel}</span>
           <h2 className="text-3xl md:text-4xl font-bold text-graphite mt-3">
-            Прозрачные условия
+            {content.services.sectionTitle}
           </h2>
           <p className="text-graphite-light mt-4 max-w-2xl mx-auto">
-            Фиксированные цены. Никаких скрытых платежей. Всё фиксируется в договоре.
+            {content.services.sectionSubtitle}
           </p>
         </div>
         
         <div className="stagger-children grid md:grid-cols-3 gap-8">
-          {services.map((service, index) => (
+          {content.services.cards.map((service, index) => (
             <div 
               key={index} 
               className={`relative p-8 rounded-2xl border transition-all duration-300 hover:shadow-xl ${
@@ -308,51 +268,29 @@ function Services() {
 // ============ PROCESS SECTION ============
 function Process() {
   const ref = useScrollAnimation();
+  const { content } = useContent();
   
-  const steps = [
-    {
-      number: '01',
-      title: 'Заявка и бриф',
-      description: 'Вы оставляете заявку и описываете задачу в письменном виде. Без звонков и созвонов.'
-    },
-    {
-      number: '02',
-      title: 'Коммерческое предложение',
-      description: 'В течение 24 часов отправляю подробное КП с ценами, сроками и планом работ.'
-    },
-    {
-      number: '03',
-      title: 'Договор и старт',
-      description: 'Фиксируем всё в договоре. Оплата по этапам. Начинаем работу сразу после подписания.'
-    },
-    {
-      number: '04',
-      title: 'Работа и отчётность',
-      description: 'Регулярные письменные отчёты. Все правки — в переписке. Результат — измеримый.'
-    }
-  ];
-
   return (
     <section ref={ref} className="py-20 md:py-32 bg-surface">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-16 fade-in-up">
-          <span className="text-sm font-semibold text-accent uppercase tracking-wider">Порядок работы</span>
+          <span className="text-sm font-semibold text-accent uppercase tracking-wider">{content.process.sectionLabel}</span>
           <h2 className="text-3xl md:text-4xl font-bold text-graphite mt-3">
-            4 шага до результата
+            {content.process.sectionTitle}
           </h2>
           <div className="inline-flex items-center gap-2 mt-4 px-4 py-2 bg-accent/10 rounded-full">
             <PenTool className="w-4 h-4 text-accent" />
-            <span className="text-sm text-accent font-medium">Работа только в письменном виде — без созвонов</span>
+            <span className="text-sm text-accent font-medium">{content.process.badgeText}</span>
           </div>
         </div>
         
         <div className="stagger-children grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {steps.map((step, index) => (
+          {content.process.steps.map((step, index) => (
             <div key={index} className="relative p-6 rounded-2xl bg-white border border-gray-100 hover:border-accent/20 hover:shadow-lg transition-all duration-300">
-              <div className="text-4xl font-bold text-accent/20 mb-4">{step.number}</div>
+              <div className="text-4xl font-bold text-accent/20 mb-4">{String(index + 1).padStart(2, '0')}</div>
               <h3 className="text-lg font-bold text-graphite mb-2">{step.title}</h3>
               <p className="text-sm text-graphite-light leading-relaxed">{step.description}</p>
-              {index < steps.length - 1 && (
+              {index < content.process.steps.length - 1 && (
                 <div className="hidden lg:block absolute top-1/2 -right-3 transform -translate-y-1/2">
                   <ArrowRight className="w-5 h-5 text-accent/30" />
                 </div>
@@ -368,45 +306,33 @@ function Process() {
 // ============ ADVANTAGES SECTION ============
 function Advantages() {
   const ref = useScrollAnimation();
+  const { content } = useContent();
   
-  const advantages = [
-    {
-      icon: FileText,
-      title: 'Всё в письменном виде',
-      description: 'Никаких устных договорённостей. Каждая задача, каждый срок, каждый результат — зафиксирован в переписке.'
-    },
-    {
-      icon: Target,
-      title: 'Измеримый результат',
-      description: 'Работаю по KPI. Вы видите конкретные цифры: рост выручки, конверсии, позиции в выдаче.'
-    },
-    {
-      icon: Shield,
-      title: 'Технологичный подход',
-      description: 'Использую ИИ-агентов для автоматизации. Это не просто «менеджер» — это система, которая масштабируется.'
-    }
-  ];
+  const icons = [FileText, Target, Shield];
 
   return (
     <section ref={ref} className="py-20 md:py-32 bg-white">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-16 fade-in-up">
-          <span className="text-sm font-semibold text-accent uppercase tracking-wider">Преимущества</span>
+          <span className="text-sm font-semibold text-accent uppercase tracking-wider">{content.advantages.sectionLabel}</span>
           <h2 className="text-3xl md:text-4xl font-bold text-graphite mt-3">
-            Почему выбирают меня
+            {content.advantages.sectionTitle}
           </h2>
         </div>
         
         <div className="stagger-children grid md:grid-cols-3 gap-8">
-          {advantages.map((advantage, index) => (
-            <div key={index} className="text-center p-8 rounded-2xl hover:bg-surface transition-all duration-300">
-              <div className="w-16 h-16 rounded-2xl bg-accent/10 flex items-center justify-center mx-auto mb-6">
-                <advantage.icon className="w-8 h-8 text-accent" />
+          {content.advantages.items.map((advantage, index) => {
+            const Icon = icons[index] || Target;
+            return (
+              <div key={index} className="text-center p-8 rounded-2xl hover:bg-surface transition-all duration-300">
+                <div className="w-16 h-16 rounded-2xl bg-accent/10 flex items-center justify-center mx-auto mb-6">
+                  <Icon className="w-8 h-8 text-accent" />
+                </div>
+                <h3 className="text-xl font-bold text-graphite mb-3">{advantage.title}</h3>
+                <p className="text-graphite-light leading-relaxed">{advantage.description}</p>
               </div>
-              <h3 className="text-xl font-bold text-graphite mb-3">{advantage.title}</h3>
-              <p className="text-graphite-light leading-relaxed">{advantage.description}</p>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
@@ -416,6 +342,7 @@ function Advantages() {
 // ============ CONTACT FORM SECTION ============
 function ContactForm() {
   const ref = useScrollAnimation();
+  const { content } = useContent();
   const [formData, setFormData] = useState({ name: '', contact: '', task: '' });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -435,11 +362,9 @@ function ContactForm() {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (honeypot) return; // Bot detected
+    if (honeypot) return;
     if (validate()) {
-      // Simulate form submission
       setIsSubmitted(true);
-      // In production: send to email/Telegram bot
       console.log('Form submitted:', formData);
     }
   };
@@ -451,10 +376,8 @@ function ContactForm() {
           <div className="w-20 h-20 rounded-full bg-accent-green/20 flex items-center justify-center mx-auto mb-6">
             <CheckCircle2 className="w-10 h-10 text-accent-green" />
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Заявка отправлена!</h2>
-          <p className="text-white/70 text-lg">
-            Спасибо за обращение. Я свяжусь с вами в течение 24 часов в указанном мессенджере.
-          </p>
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">{content.contact.successTitle}</h2>
+          <p className="text-white/70 text-lg">{content.contact.successMessage}</p>
         </div>
       </section>
     );
@@ -464,17 +387,16 @@ function ContactForm() {
     <section ref={ref} id="contact" className="py-20 md:py-32 bg-navy">
       <div className="max-w-3xl mx-auto px-6">
         <div className="text-center mb-12 fade-in-up">
-          <span className="text-sm font-semibold text-accent uppercase tracking-wider">Контакты</span>
+          <span className="text-sm font-semibold text-accent uppercase tracking-wider">{content.contact.sectionLabel}</span>
           <h2 className="text-3xl md:text-4xl font-bold text-white mt-3">
-            Оставьте заявку
+            {content.contact.sectionTitle}
           </h2>
           <p className="text-white/60 mt-4">
-            Опишите задачу — отвечу в течение 24 часов с конкретным предложением
+            {content.contact.sectionSubtitle}
           </p>
         </div>
         
         <form onSubmit={handleSubmit} className="fade-in-up space-y-6">
-          {/* Honeypot */}
           <div className="absolute left-[-9999px]" aria-hidden="true">
             <input
               type="text"
@@ -535,11 +457,11 @@ function ContactForm() {
             className="w-full inline-flex items-center justify-center gap-2 px-8 py-4 bg-accent hover:bg-accent-hover text-white font-semibold rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-accent/25"
           >
             <Send className="w-5 h-5" />
-            Отправить заявку
+            {content.contact.button}
           </button>
           
           <p className="text-center text-white/40 text-sm">
-            Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности
+            {content.contact.privacyNote}
           </p>
         </form>
       </div>
@@ -549,6 +471,7 @@ function ContactForm() {
 
 // ============ FOOTER ============
 function Footer() {
+  const { content } = useContent();
   return (
     <footer className="py-12 bg-graphite border-t border-white/10">
       <div className="max-w-6xl mx-auto px-6">
@@ -557,17 +480,17 @@ function Footer() {
             <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center">
               <Zap className="w-4 h-4 text-white" />
             </div>
-            <span className="text-white font-semibold">Маркетплейс + ИИ</span>
+            <span className="text-white font-semibold">{content.footer.brand}</span>
           </div>
           
           <div className="flex items-center gap-6 text-sm text-white/60">
-            <a href="mailto:hello@example.com" className="hover:text-white transition-colors">hello@example.com</a>
-            <a href="https://t.me/username" className="hover:text-white transition-colors">Telegram</a>
+            <a href={`mailto:${content.footer.email}`} className="hover:text-white transition-colors">{content.footer.email}</a>
+            <a href={content.footer.telegramUrl} className="hover:text-white transition-colors">{content.footer.telegram}</a>
             <a href="#privacy" className="hover:text-white transition-colors">Политика конфиденциальности</a>
           </div>
           
           <div className="text-sm text-white/40">
-            © {new Date().getFullYear()} Все права защищены
+            © {new Date().getFullYear()} {content.footer.copyright}
           </div>
         </div>
       </div>
@@ -598,7 +521,6 @@ function Header() {
           <span className="text-white font-bold text-lg">MP + AI</span>
         </a>
         
-        {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-8">
           <a href="#services" className="text-sm text-white/70 hover:text-white transition-colors">Услуги</a>
           <a href="#contact" className="text-sm text-white/70 hover:text-white transition-colors">Контакты</a>
@@ -607,7 +529,6 @@ function Header() {
           </a>
         </nav>
         
-        {/* Mobile menu button */}
         <button 
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           className="md:hidden text-white p-2"
@@ -616,7 +537,6 @@ function Header() {
         </button>
       </div>
       
-      {/* Mobile menu */}
       {isMobileMenuOpen && (
         <div className="md:hidden bg-navy/98 backdrop-blur-md border-t border-white/10">
           <nav className="flex flex-col p-6 gap-4">
@@ -632,8 +552,8 @@ function Header() {
   );
 }
 
-// ============ MAIN APP ============
-export default function App() {
+// ============ SITE CONTENT (all sections) ============
+function SiteContent() {
   return (
     <div className="font-sans">
       <Header />
@@ -646,5 +566,23 @@ export default function App() {
       <ContactForm />
       <Footer />
     </div>
+  );
+}
+
+// ============ MAIN APP ============
+export default function App() {
+  const [isAdmin, setIsAdmin] = useState(() => window.location.hash === '#admin');
+
+  useEffect(() => {
+    const handleHash = () => setIsAdmin(window.location.hash === '#admin');
+    window.addEventListener('hashchange', handleHash);
+    return () => window.removeEventListener('hashchange', handleHash);
+  }, []);
+
+  return (
+    <ContentProvider>
+      <SiteContent />
+      {isAdmin && <AdminPanel />}
+    </ContentProvider>
   );
 }
