@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { ContentProvider, useContent } from './ContentContext';
 import { AdminPanel } from './AdminPanel';
+import { PrivacyPolicy } from './PrivacyPolicy';
 
 // ============ SCROLL ANIMATION HOOK ============
 function useScrollAnimation() {
@@ -486,7 +487,7 @@ function Footer() {
           <div className="flex items-center gap-6 text-sm text-white/60">
             <a href={`mailto:${content.footer.email}`} className="hover:text-white transition-colors">{content.footer.email}</a>
             <a href={content.footer.telegramUrl} className="hover:text-white transition-colors">{content.footer.telegram}</a>
-            <a href="#privacy" className="hover:text-white transition-colors">Политика конфиденциальности</a>
+            <a href="#privacy" onClick={(e) => { e.preventDefault(); window.location.hash = 'privacy'; }} className="hover:text-white transition-colors cursor-pointer">Политика конфиденциальности</a>
           </div>
           
           <div className="text-sm text-white/40">
@@ -571,18 +572,32 @@ function SiteContent() {
 
 // ============ MAIN APP ============
 export default function App() {
-  const [isAdmin, setIsAdmin] = useState(() => window.location.hash === '#admin');
+  const [hash, setHash] = useState(() => window.location.hash);
 
   useEffect(() => {
-    const handleHash = () => setIsAdmin(window.location.hash === '#admin');
+    const handleHash = () => setHash(window.location.hash);
     window.addEventListener('hashchange', handleHash);
     return () => window.removeEventListener('hashchange', handleHash);
   }, []);
 
+  const isAdmin = hash === '#admin';
+  const isPrivacy = hash === '#privacy';
+
+  const handleClosePrivacy = () => {
+    window.location.hash = '';
+    window.scrollTo(0, 0);
+  };
+
   return (
     <ContentProvider>
-      <SiteContent />
-      {isAdmin && <AdminPanel />}
+      {isPrivacy ? (
+        <PrivacyPolicy onClose={handleClosePrivacy} />
+      ) : (
+        <>
+          <SiteContent />
+          {isAdmin && <AdminPanel />}
+        </>
+      )}
     </ContentProvider>
   );
 }
